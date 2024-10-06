@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
 import sys
-from math import gcd
+import random
+from math import gcd, isqrt
 
 
 def trial_division(n):
@@ -15,7 +16,7 @@ def trial_division(n):
         tuple: A tuple containing two factors of the number if found.
         None: If no small factors are found.
     """
-    for i in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53]:
+    for i in range(2, min(isqrt(n) + 1, 1000)):
         if n % i == 0:
             return i, n // i
     return None
@@ -35,25 +36,43 @@ def pollards_rho(n):
     if n % 2 == 0:
         return 2
 
-    x = 2
-    y = 2
-    d = 1
+    # Random initial values and constant
+    y, c, m = random.randint(1, n - 1),
+    random.randint(1, n - 1), random.randint(1, n - 1)
+    r, q, g = 1, 1, 1
 
     def f(x):
-        return (x**2 + 1) % n
+        return (x**2 + c) % n
 
-    while d == 1:
-        x = f(x)
-        y = f(f(y))
-        d = gcd(abs(x - y), n)
+    while g == 1:
+        x = y
+        # Cycle of length r
+        for _ in range(r):
+            y = f(y)
 
-    if d == n:
-        return None
-    else:
-        return d
+        # Use accumulated product for GCD calculation
+        k = 0
+        while k < r and g == 1:
+            ys = y
+            for _ in range(min(m, r - k)):
+                y = f(y)
+                q = (q * abs(x - y)) % n
+            g = gcd(q, n)
+            k += m
+        r *= 2
+
+    if g == n:
+        # Retry with different parameters if factorization fails
+        while True:
+            ys = f(ys)
+            g = gcd(abs(x - ys), n)
+            if g > 1:
+                break
+
+    return g
 
 
-def factorize(n):
+def fac(n):
     """
     Factorize a number into two smaller numbers.
 
@@ -93,7 +112,7 @@ def main(filename):
             numbers = [int(line.strip()) for line in file]
 
         for n in numbers:
-            p, q = factorize(n)
+            p, q = fac(n)
             print(f"{n}={p}*{q}")
 
     except FileNotFoundError:
