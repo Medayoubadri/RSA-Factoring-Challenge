@@ -36,8 +36,8 @@ def pollards_rho(n):
     if n % 2 == 0:
         return 2
 
-    # Random initial values and constant
-    y, c, m = random.randint(1, n - 1),random.randint(1, n - 1), random.randint(1, n - 1)
+    y, c, m = random.randint(1, n - 1),
+    random.randint(1, n - 1), random.randint(1, n - 1)
     r, q, g = 1, 1, 1
 
     def f(x):
@@ -45,11 +45,9 @@ def pollards_rho(n):
 
     while g == 1:
         x = y
-        # Cycle of length r
         for _ in range(r):
             y = f(y)
 
-        # Use accumulated product for GCD calculation
         k = 0
         while k < r and g == 1:
             ys = y
@@ -61,7 +59,6 @@ def pollards_rho(n):
         r *= 2
 
     if g == n:
-        # Retry with different parameters if factorization fails
         while True:
             ys = f(ys)
             g = gcd(abs(x - ys), n)
@@ -84,15 +81,18 @@ def factorize(n):
     if n <= 3:
         return n, 1
 
-    # Try trial division first
     factor_pair = trial_division(n)
     if factor_pair:
         return factor_pair
 
-    # If trial division fails, use Pollard's Rho
     factor = pollards_rho(n)
-    if factor:
+    if factor and factor != n:
         return factor, n // factor
+
+    for i in range(2, isqrt(n) + 1):
+        if n % i == 0:
+            return i, n // i
+
     return n, 1
 
 
