@@ -37,8 +37,7 @@ def pollards_rho(n):
         return 2
 
     # Random initial values and constant
-    y, c, m = random.randint(1, n - 1),
-    random.randint(1, n - 1), random.randint(1, n - 1)
+    y, c, m = random.randint(1, n - 1),random.randint(1, n - 1), random.randint(1, n - 1)
     r, q, g = 1, 1, 1
 
     def f(x):
@@ -72,7 +71,7 @@ def pollards_rho(n):
     return g
 
 
-def fac(n):
+def factorize(n):
     """
     Factorize a number into two smaller numbers.
 
@@ -112,7 +111,7 @@ def main(filename):
             numbers = [int(line.strip()) for line in file]
 
         for n in numbers:
-            p, q = fac(n)
+            p, q = factorize(n)
             print(f"{n}={p}*{q}")
 
     except FileNotFoundError:
