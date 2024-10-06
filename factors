@@ -36,8 +36,7 @@ def pollards_rho(n):
     if n % 2 == 0:
         return 2
 
-    y, c, m = random.randint(1, n - 1),
-    random.randint(1, n - 1), random.randint(1, n - 1)
+    y, c, m = random.randint(1, n - 1), random.randint(1, n - 1), random.randint(1, n - 1)
     r, q, g = 1, 1, 1
 
     def f(x):
