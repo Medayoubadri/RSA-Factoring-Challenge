@@ -1,30 +1,28 @@
 #!/usr/bin/env python3
-
 import sys
-from math import sqrt
+import math
 
-def factorize(n):
-    for i in range(2, int(sqrt(n)) + 1):
+def factorize_number(n):
+    """Finds two factors of n."""
+    # Start from 2 and go up to the square root of n
+    for i in range(2, int(math.isqrt(n)) + 1):
         if n % i == 0:
             return i, n // i
-    return n, 1
-
-def main(filename):
-    try:
-        with open(filename, 'r') as file:
-            for line in file:
-                n = int(line.strip())
-                p, q = factorize(n)
-                print(f"{n}={p}*{q}")
-    except FileNotFoundError:
-        print(f"Error: File '{filename}' not found.")
-    except ValueError:
-        print(f"Error: Invalid number in the file.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
+    return n, 1  # If no factors are found, it's prime
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: factors <file>")
+        print(f"Usage: {sys.argv[0]} <file>")
         sys.exit(1)
-    main(sys.argv[1])
+
+    try:
+        with open(sys.argv[1], "r") as file:
+            for line in file:
+                num = int(line.strip())
+                p, q = factorize_number(num)
+                print(f"{num}={p}*{q}")
+
+    except FileNotFoundError:
+        print(f"Error: file {sys.argv[1]} not found.")
+        sys.exit(1)
+
