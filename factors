@@ -1,34 +1,55 @@
 #!/usr/bin/env python3
-import sys
-import math
 
-def factorize_number(n):
-    """Finds two factors of n."""
-    if n <= 1:
+import sys
+from math import gcd
+
+def pollards_rho(n):
+    if n % 2 == 0:
+        return 2
+    
+    x = 2
+    y = 2
+    d = 1
+    
+    f = lambda x: (x**2 + 1) % n
+    
+    while d == 1:
+        x = f(x)
+        y = f(f(y))
+        d = gcd(abs(x - y), n)
+    
+    if d == n:
+        return None
+    else:
+        return d
+
+def factorize(n):
+    if n <= 3:
         return n, 1
-    for i in range(2, int(math.isqrt(n)) + 1):
-        if n % i == 0:
-            return i, n // i
+    
+    factor = pollards_rho(n)
+    if factor:
+        return factor, n // factor
     return n, 1
+
+def main(filename):
+    try:
+        with open(filename, 'r') as file:
+            numbers = [int(line.strip()) for line in file]
+        
+        for n in numbers:
+            p, q = factorize(n)
+            print(f"{n}={p}*{q}")
+    
+    except FileNotFoundError:
+        print(f"Error: File '{filename}' not found.")
+    except ValueError:
+        print(f"Error: Invalid number in the file.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <file>")
+        print("Usage: factors <file>")
         sys.exit(1)
-
-    try:
-        with open(sys.argv[1], "r") as file:
-            for line in file:
-                try:
-                    num = int(line.strip())
-                    if num > 1:
-                        p, q = factorize_number(num)
-                        print(f"{num}={p}*{q}")
-                    else:
-                        print(f"Error: {num} is not greater than 1.")
-                except ValueError:
-                    print(f"Error: Invalid number {line.strip()}.")
-    except FileNotFoundError:
-        print(f"Error: file {sys.argv[1]} not found.")
-        sys.exit(1)
-
+    main(sys.argv[1])
