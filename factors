@@ -4,33 +4,61 @@ import sys
 from math import gcd
 
 def trial_division(n):
-    """Perform trial division to quickly factorize small numbers."""
+    """
+    Perform trial division to quickly find small factors of the number.
+
+    Args:
+        n (int): The number to factorize.
+
+    Returns:
+        tuple: A tuple containing two factors of the number if found.
+        None: If no small factors are found.
+    """
     for i in [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53]:
         if n % i == 0:
             return i, n // i
     return None
 
 def pollards_rho(n):
+    """
+    Use Pollard's Rho algorithm to find a non-trivial factor of the number.
+
+    Args:
+        n (int): The number to factorize.
+
+    Returns:
+        int: A non-trivial factor of the number if found.
+        None: If no factor is found.
+    """
     if n % 2 == 0:
         return 2
-    
+
     x = 2
     y = 2
     d = 1
-    
+
     f = lambda x: (x**2 + 1) % n
-    
+
     while d == 1:
         x = f(x)
         y = f(f(y))
         d = gcd(abs(x - y), n)
-    
+
     if d == n:
         return None
     else:
         return d
 
 def factorize(n):
+    """
+    Factorize a number into two smaller numbers.
+
+    Args:
+        n (int): The number to factorize.
+
+    Returns:
+        tuple: A tuple containing two factors of the number.
+    """
     if n <= 3:
         return n, 1
 
@@ -46,14 +74,23 @@ def factorize(n):
     return n, 1
 
 def main(filename):
+    """
+    Main function to read the input file and factorize each number.
+
+    Args:
+        filename (str): The path to the file containing numbers to factorize.
+
+    Prints:
+        str: Each number in the form "n=p*q", where p and q are factors of n.
+    """
     try:
         with open(filename, 'r') as file:
             numbers = [int(line.strip()) for line in file]
-        
+
         for n in numbers:
             p, q = factorize(n)
             print(f"{n}={p}*{q}")
-    
+
     except FileNotFoundError:
         print(f"Error: File '{filename}' not found.")
     except ValueError:
@@ -66,4 +103,3 @@ if __name__ == "__main__":
         print("Usage: factors <file>")
         sys.exit(1)
     main(sys.argv[1])
-
