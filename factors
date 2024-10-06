@@ -4,11 +4,12 @@ import math
 
 def factorize_number(n):
     """Finds two factors of n."""
-    # Start from 2 and go up to the square root of n
+    if n <= 1:
+        return n, 1
     for i in range(2, int(math.isqrt(n)) + 1):
         if n % i == 0:
             return i, n // i
-    return n, 1  # If no factors are found, it's prime
+    return n, 1
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -18,10 +19,15 @@ if __name__ == "__main__":
     try:
         with open(sys.argv[1], "r") as file:
             for line in file:
-                num = int(line.strip())
-                p, q = factorize_number(num)
-                print(f"{num}={p}*{q}")
-
+                try:
+                    num = int(line.strip())
+                    if num > 1:
+                        p, q = factorize_number(num)
+                        print(f"{num}={p}*{q}")
+                    else:
+                        print(f"Error: {num} is not greater than 1.")
+                except ValueError:
+                    print(f"Error: Invalid number {line.strip()}.")
     except FileNotFoundError:
         print(f"Error: file {sys.argv[1]} not found.")
         sys.exit(1)
